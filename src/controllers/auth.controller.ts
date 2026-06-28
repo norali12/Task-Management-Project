@@ -1,7 +1,7 @@
 
 import { Request, Response } from "express";
 
-import { loginService, signupService } from "../services/auth.services.js";
+import { loginService, signupService, verifyEmailService } from "../services/auth.services.js";
 import { clearRefreshTokenCookie, setRefreshTokenCookie } from "../utils/cookies.js";
 
 export const signup = async (
@@ -72,23 +72,28 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-// export const logout = async (req: Request, res: Response) => {
-//     try {
-        
-//     } catch (error) {
-        
-//     }
+export const verifyEmail = async (req: Request, res: Response) => {
+  try {
+    const { Email, otp } = req.body;
+    await verifyEmailService({ Email, otp });
 
-
-//     await logoutService(req);
-
-// clearRefreshTokenCookie(res);
-
-// res.json({
-
-// success:true
-
-// });
-// }
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully. You can now log in.",
+    });
+  } catch (error) {
+    console.error("Verify email error:", error);
+    if (error instanceof Error) {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 

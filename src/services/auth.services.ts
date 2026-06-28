@@ -128,7 +128,32 @@ const userObj = user.toObject();
 
 }
 
+export const verifyEmailService = async (data: { Email: string; otp: string }) => {
+  const user = await User.findOne({ Email: data.Email });
 
-// export const logoutService = async () => {
-// };
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.isVerified) {
+    throw new Error("Email is already verified");
+  }
+
+  if (user.emailVerificationOTP !== data.otp) {
+    throw new Error("Invalid verification code");
+  }
+
+  if (user.emailVerificationOTPExpiry && new Date() > user.emailVerificationOTPExpiry) {
+    throw new Error("Verification code has expired");
+  }
+
+  user.isVerified = true;
+  user.emailVerificationOTP = undefined;
+  user.emailVerificationOTPExpiry = undefined;
+  await user.save();
+
+  return;
+};
+
+
 

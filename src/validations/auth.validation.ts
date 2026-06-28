@@ -23,4 +23,11 @@ export const loginSchema = z.object({
   })
 });
 
+export const verifyEmailSchema = z.object({
+  body: z.object({
+    Email: z.email("Invalid email"), 
+    otp: z.string().min(3, "OTP is required"),
+  }),
+});
+
 
