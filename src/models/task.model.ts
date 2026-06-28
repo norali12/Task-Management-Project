@@ -33,7 +33,8 @@ const taskSchema = new mongoose.Schema({
     },
     assignee:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User"
+        ref: "User",
+        default: null
     }
 },{
     timestamps:true
